@@ -29,6 +29,7 @@
   "devDependencies": {
     "@types/express": "^4.17.17",
     "concurrently": "^7.6.0",
+    "cypress": "^13.16.1",
     "markdown-toc": "^1.2.0",
     "nodemon": "^2.0.21"
   }
