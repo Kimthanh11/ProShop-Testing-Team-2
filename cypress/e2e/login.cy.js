@@ -36,8 +36,24 @@ it("Can't login when missing email", () => {
   cy.get('.Toastify__toast-body').should("contain", "Invalid email or password")
 })
 
+it("Can't login when email is wrong", () => {
+  cy.get(loginPage.TXT_EMAIL).type("wrongemail@gmail.com")
+  cy.get(loginPage.TXT_PASSWORD).type("123456")
+  loginPage.clickSignInButton()
+
+  cy.get('.Toastify__toast-body').should("contain", "Invalid email or password")
+})
+
 it("Can't login when missing password", () => {
   cy.get(loginPage.TXT_EMAIL).type("admin@email.com")
+  loginPage.clickSignInButton()
+
+  cy.get('.Toastify__toast-body').should("contain", "Invalid email or password")
+})
+
+it("Can't login when password is wrong", () => {
+  cy.get(loginPage.TXT_EMAIL).type("admin@email.com")
+  cy.get(loginPage.TXT_PASSWORD).type("wrongpassword")
   loginPage.clickSignInButton()
 
   cy.get('.Toastify__toast-body').should("contain", "Invalid email or password")
@@ -63,3 +79,4 @@ it("Go to register page successful", () => {
     loginPage.clickRegisterButton()
     cy.url().should("include", "/register");
 })
+
