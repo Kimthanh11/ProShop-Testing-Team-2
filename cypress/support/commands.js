@@ -22,4 +22,22 @@
 //
 //
 // -- This will overwrite an existing command --
+
+import { homePage } from "../pages/homepage";
+import { productDetails } from "../pages/productDetails";
+
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+Cypress.Commands.add('searchAndSelectProduct', (productName) => {
+    homePage.searchProduct(productName)
+        .checkProductAppearedAfterSearch(productName);
+    homePage.selectOneProduct(productName);
+});
+
+Cypress.Commands.add('addProductToCart', (productName) => {
+    cy.searchAndSelectProduct(productName);
+    productDetails.addToCart();
+});
+
+Cypress.Commands.add('verifyCartCount', (expectedCount) => {
+    homePage.checkNumberOfProductsInCart(expectedCount);
+});
