@@ -17,4 +17,9 @@ export const loginPage = {
         cy.get(this.BTN_SIGNIN).click()
         return this;
     },
+
+    clickRegisterButton(){
+        cy.contains('a', 'Register').click()
+        return this;
+    }
 }
