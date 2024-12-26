@@ -13,5 +13,10 @@
         "email": "empty@email.com",
         "password": "123456",
         "username": "Empty"
+    },
+    "demo": {
+        "email": "test@gmail.com",
+        "password": "123456",
+        "username": "Demo User"
     }
 }

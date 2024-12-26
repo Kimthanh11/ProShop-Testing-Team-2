@@ -1,9 +1,5 @@
 const { loginPage } = require("../pages/login");
 const { homePage } = require("../pages/homepage");
-import { payment } from "../pages/payment";
-import {productDetails} from "../pages/productDetails"
-import { shipping } from "../pages/shipping";
-import { shoppingCart } from "../pages/shoppingCart";
 
 beforeEach(() => {
     cy.visit("/login");
