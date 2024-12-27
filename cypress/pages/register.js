@@ -33,5 +33,10 @@ export const registerPage = {
     clickLoginButton(){
         cy.contains('a', 'Login').click()
         return this;
+    },
+
+    verifyErrorMessage(message){
+        cy.get('.Toastify__toast-body').should("contain", message)
+        return this;
     }
 }

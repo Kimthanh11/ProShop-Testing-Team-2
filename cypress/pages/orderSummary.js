@@ -4,6 +4,14 @@ export const orderSummary = {
     BTN_PAYPAL: '.paypal-button-label-container',
     BTN_DELIVERED: 'button.btn.btn-block.btn.btn-primary',
 
+    checkDirectToOrderSummary(){
+        cy.get(this.BTN_PLACE_ORDER).should('be.visible');
+    },
+
+    checkPlacedOrder(){
+        cy.get('h1').should('contain', 'Order');
+    },
+
     clickPlaceOrder(){
         cy.get(this.BTN_PLACE_ORDER).contains('Place Order').click();
         return this

@@ -32,7 +32,7 @@ import { shipping } from "../pages/shipping";
 Cypress.Commands.add('searchAndSelectProduct', (productName) => {
     homePage.searchProduct(productName)
         .checkProductAppearedAfterSearch(productName);
-    homePage.selectOneProduct(productName);
+    homePage.selectProduct(productName);
 });
 
 Cypress.Commands.add('addProductToCart', (productName) => {
@@ -59,7 +59,7 @@ Cypress.Commands.add('register', (email, name, password) => {
   cy.get(registerPage.TXT_NAME).type(name);
   cy.get(registerPage.TXT_EMAIL).type(email);
   cy.get(registerPage.TXT_PASSWORD).type(password);
-  cy.get(registerPage.TXT_CNFPASS).type(password);  // Confirm password
+  cy.get(registerPage.TXT_CNFPASS).type(password);  
 
   registerPage.clickRegisterButton();  // Submit the form
 });

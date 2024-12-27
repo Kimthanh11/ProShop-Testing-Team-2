@@ -1,22 +1,27 @@
 {
-    "admin": {
-        "email": "admin@email.com",
-        "password": "123456",
-        "username": "Admin User"
-    },
-    "customer1": {
-        "email": "john@email.com",
-        "password": "123456",
-        "username": "John Doe"
-    },
-    "empty": {
-        "email": "empty@email.com",
-        "password": "123456",
-        "username": "Empty"
-    },
-    "demo": {
-        "email": "test@gmail.com",
-        "password": "123456",
-        "username": "Demo User"
-    }
+  "admin": {
+    "email": "admin@email.com",
+    "password": "123456",
+    "username": "Admin User"
+  },
+  "customer1": {
+    "email": "john@email.com",
+    "password": "123456",
+    "username": "John Doe"
+  },
+  "customer2": {
+    "email": "jane@email.com",
+    "password": "123456",
+    "username": "Jane Doe"
+  },
+  "empty": {
+    "email": "empty@email.com",
+    "password": "123456",
+    "username": "Empty"
+  },
+  "demo": {
+    "email": "test@gmail.com",
+    "password": "1234",
+    "username": "Updated Name"
+  }
 }

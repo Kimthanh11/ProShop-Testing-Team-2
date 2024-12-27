@@ -1,8 +1,21 @@
 import { loginPage } from "../pages/login";
+import { orderSummary } from "../pages/orderSummary";
 import { payment } from "../pages/payment";
 import { productDetails } from "../pages/productDetails";
 import { shipping } from "../pages/shipping";
 import { shoppingCart } from "../pages/shoppingCart";
+
+before(() => {
+    // Run the data:destroy command
+    cy.exec('npm run data:destroy').then((result) => {
+      cy.log(result.stdout);
+    });
+  
+    // Run the data:import command
+    cy.exec('npm run data:import').then((result) => {
+      cy.log(result.stdout);
+    });
+});
 
 beforeEach(() => {
     cy.fixture("users").as("user");
@@ -75,9 +88,9 @@ it('Verify the user can proceed to the next step when all shipping details are e
     payment.checkDirectToPayment()
 });
 
-it.only('Verify an error message is shown when invalid or incomplete shipping details are entered', function () {
+it('Verify an error message is shown when invalid or incomplete shipping details are entered', function () {
     cy.get("@product").then((product) => {
-        cy.searchAndSelectProduct(product.sony.name);
+        cy.searchAndSelectProduct(product.airpods.name);
         productDetails.addToCart()
     });
     shoppingCart.proceedToCheckout()
@@ -85,3 +98,43 @@ it.only('Verify an error message is shown when invalid or incomplete shipping de
         cy.wrap($input).invoke('prop', 'validationMessage').should('equal', 'Please fill out this field.');
     });
 });
+
+it('Verify the user can proceed to the next step when all payment details are entered', function () {
+    cy.get("@product").then((product) => {
+        cy.searchAndSelectProduct(product.sony.name);
+        productDetails.addToCart()
+    });
+    shoppingCart.proceedToCheckout()
+    cy.get("@address").then((address) => {
+                shipping
+                    .inputAddress(address.address)
+                    .inputCity(address.city)
+                    .inputPostalCode(address.postalCode)
+                    .inputCountry(address.country)
+                    .proceedToCheckout();
+            });
+    payment.checkDirectToPayment()
+    payment.pay()
+    orderSummary.checkDirectToOrderSummary()
+});
+
+it.only("Verify the order is successfully placed when all required details are provided correctly.", function () {
+    cy.get("@product").then((product) => {
+        cy.searchAndSelectProduct(product.sony.name);
+        productDetails.addToCart()
+    });
+    shoppingCart.proceedToCheckout()
+    cy.get("@address").then((address) => {
+                shipping
+                    .inputAddress(address.address)
+                    .inputCity(address.city)
+                    .inputPostalCode(address.postalCode)
+                    .inputCountry(address.country)
+                    .proceedToCheckout();
+            });
+    payment.pay()
+    orderSummary.clickPlaceOrder()
+    orderSummary.checkDirectToOrderSummary()
+    orderSummary.clickPlaceOrder()
+    orderSummary.checkPlacedOrder()
+})
