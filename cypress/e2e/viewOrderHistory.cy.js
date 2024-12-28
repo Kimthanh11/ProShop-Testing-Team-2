@@ -28,19 +28,13 @@ beforeEach(() => {
 
 it('Verify the order history is empty when no orders have been placed', function () {
     cy.visit("/login");
-        cy.get("@user").then((user) => {
-            loginPage.typeEmail(user.empty.email)
-                .typePassword(user.empty.password)
-                .clickSignInButton();
-        });
+    cy.login("customer1")
     homePage.navigateToProfile()
-    cy.get('div.dropdown-menu.show') // Target the dropdown
-    .find('a.dropdown-item[href="/profile"]') // Find the "Profile" link
-    .click({ force: true }); // Force the click if needed
     profile.checkDirectToProfile()
+    cy.get('th').should('not.exist')
 });
 
-it.only('Verify the details of a specific order are displayed correctly when an order is selected', function () {
+it('Verify the details of a specific order are displayed correctly when an order is selected', function () {
     cy.visit("/login");
     cy.login("customer1")
 
@@ -66,15 +60,16 @@ it.only('Verify the details of a specific order are displayed correctly when an 
         Cypress.env('orderNumber', orderNumber);
         homePage.navigateToProfile()
         let orderId = Cypress.env('orderNumber')
-        profile.navigateToDetailedOrder(orderId)})
+        profile.navigateToDetailedOrder(orderId)
+    })
 
-    // Verify order details
+    //Verify order details
     cy.get('.list-group-item').first().within(() => {
         // Check Shipping details
         cy.contains('h2', 'Shipping').should('exist');
         cy.contains('p', 'Name: John Doe').should('exist');
         cy.contains('a', 'john@email.com').should('exist');
-        cy.contains('p', 'Address:1, 1 1, 1').should('exist');
+        cy.contains('p', `Address:${this.address.address}, ${this.address.city} ${this.address.postalCode}, ${this.address.country}`).should('exist');
         cy.contains('div', 'Not Delivered').should('exist');
       });
 

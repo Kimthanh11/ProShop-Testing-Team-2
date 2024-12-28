@@ -22,6 +22,14 @@ export const profile = {
         cy.get(this.BTN_UPDATE).click();
     },
 
+    updateNamePasswordEmail(newName, password, email){
+        cy.get(this.INPUT_NAME).clear().type(newName)
+        cy.get(this.INPUT_PASSWORD).clear().type(password);
+        cy.get(this.INPUT_CONFIRM_PASSWORD).clear().type(password);
+        cy.get(this.INPUT_EMAIL).clear().type(email);
+        cy.get(this.BTN_UPDATE).click();
+    },
+
     updateName(newName) {
         cy.get(this.INPUT_NAME).clear().type(newName);
         cy.get(this.BTN_UPDATE).click();

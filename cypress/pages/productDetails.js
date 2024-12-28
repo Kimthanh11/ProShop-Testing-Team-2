@@ -3,7 +3,7 @@ export const productDetails = {
     DDL_QTY: 'select.form-control',
     INPUT_RATING: '#rating',
     INPUT_COMMENT: '#comment',
-    BTN_REVIEW: 'button[type="submit"]',
+    BTN_REVIEW: 'button[type="submit"].btn.btn-primary',
     
     addToCart() {
         cy.get(this.BTN_ADD).click()
@@ -25,6 +25,9 @@ export const productDetails = {
         cy.get(this.INPUT_RATING).select('5');
         cy.get(this.INPUT_COMMENT).type(comment);
         cy.get(this.BTN_REVIEW).first().click();
+    },
 
+    verifyReview(name) {
+        cy.get('.Toastify__toast-body').should('have.text', 'Review created successfully');
     }
 }

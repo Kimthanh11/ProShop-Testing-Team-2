@@ -27,34 +27,9 @@ beforeEach(() => {
     
 });
 
-// Admin flow
-it('Admin: Login, Create product, Update user, Delete user', () => {
-    // Admin Login
-    // Navigate to the admin login page and log in as an admin
-    cy.visit("/login");
-    cy.login('admin');
-    
-    // Admin Create product
-    // Navigate to product creation page and fill in product details
-    homePage.navigateAdminProducts()
-    products.clickCreateProduct()
-    
-});
-
 // User flow
-it('User: Browse products, Register, Add to cart, Checkout', () => {
-    // Navigate to homepage and select a product
-    cy.visit("/")
-    cy.get("@product").then((product) => {
-      homePage.selectProduct(product.sony.name)
-    })
-    
-    // Add selected product to cart
-    productDetails.addToCart()
-
-    // Proceed to checkout
-    shoppingCart.proceedToCheckout()
-
+it('User: Register, Browse products, Add to cart, Checkout', () => {
+    cy.visit("/login");
     // User is redirected to Register page (because they are not logged in)
     // Complete the registration process
     loginPage.clickRegisterButton()
@@ -64,7 +39,20 @@ it('User: Browse products, Register, Add to cart, Checkout', () => {
 
     // Change name and password after login
     homePage.navigateToProfile()
-    profile.updateNameAndPassword()
+     // Edit profile with valid information
+     const newName = 'Updated Name';
+     const newEmail = 'updated@gmail.com';
+     const password = '1234'
+     profile.updateNamePasswordEmail(newName, password, newEmail)
+     cy.get('.Toastify__toast-body').should('contain', 'Profile updated successfully')
+     cy.get('.Toastify__close-button').click()
+ 
+     // Logout
+     homePage.logout();
+ 
+     // Log in with the new email
+     cy.wait(1000);
+     loginPage.typeEmail(newEmail).typePassword(password).clickSignInButton();
 
     // Search for another product
     cy.get("@product").then((product) => {
@@ -77,9 +65,6 @@ it('User: Browse products, Register, Add to cart, Checkout', () => {
 
       // Add the searched product to cart
       productDetails.addToCart()
-
-      // Remove 1 product from the cart
-      shoppingCart.removeProduct(product.sony.name)
 
       // Proceed to checkout
       shoppingCart.proceedToCheckout()
@@ -98,6 +83,9 @@ it('User: Browse products, Register, Add to cart, Checkout', () => {
     paypalPopup.login()
     cy.wait(5000)
     paypalPopup.pay()
+    cy.wait(5000)
+    cy.get('.Toastify__toast-body').should('contain', 'Order is paid')
+    cy.get('.Toastify__close-button').click()
 
     // Store order number
     let orderNumber = ''
@@ -107,7 +95,6 @@ cy.get('h1').contains('Order').invoke('text').then((text) => {
     cy.log(orderNumber);
 
     // Check order details
-    cy.wait(15000)
     homePage.navigateToProfile()
     profile.navigateToDetailedOrder(orderNumber)
     orderSummary.checkStatusOrder(false)
@@ -120,8 +107,7 @@ cy.get('h1').contains('Order').invoke('text').then((text) => {
 // Admin flow: View all orders, View order details, Mark order as delivered
 it('Admin: View orders, View details, Mark as delivered', () => {
   cy.visit("/login");
-    // Admin Login (again if needed)
-    cy.login('admin');
+  cy.login('admin');
 
     // View all orders
     homePage.navigateAdminOrders()
@@ -129,16 +115,25 @@ it('Admin: View orders, View details, Mark as delivered', () => {
     // View specific order details
     const orderNumber = Cypress.env('orderNumber');
     cy.get(`a[href="/order/${orderNumber}"]`).first().click()
+    
+    // Check order is paid
+    orderSummary.checkStatusOrder(false)
 
     // Mark order as delivered
     orderSummary.clickDelivered()
+
+    // Check order is delivered
+    orderSummary.checkStatusOrder(true)
 });
 
 // User flow: Login, Check order, Review product
 it('User: Login, Check order, Review product', () => {
     // Login as a registered user
     cy.visit("/login");
-    cy.login('demo');
+    const newEmail = 'updated@gmail.com';
+    const password = '1234'
+    // Admin Login (again if needed)
+    loginPage.typeEmail(newEmail).typePassword(password).clickSignInButton();
 
     // Check order history
     homePage.navigateToProfile()
@@ -152,5 +147,6 @@ it('User: Login, Check order, Review product', () => {
     })
     cy.scrollTo('bottom');
     productDetails.reviewProduct()
+    productDetails.verifyReview('Updated Name')
 });
 

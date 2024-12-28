@@ -20,8 +20,8 @@
     "username": "Empty"
   },
   "demo": {
-    "email": "test@gmail.com",
+    "email": "test@email.com",
     "password": "1234",
-    "username": "Updated Name"
+    "username": "Demo User"
   }
 }
