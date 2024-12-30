@@ -1,5 +1,6 @@
 export const profile = {
     TXT_HEADING:"h2",
+    CURRENT_PASSWORD: '#currentPassword',
     INPUT_PASSWORD: '#password',
     INPUT_CONFIRM_PASSWORD: '#confirmPassword',
     BTN_UPDATE: '.col-md-3 > form > .btn',

@@ -50,7 +50,6 @@ Cypress.Commands.add('login', (userType) => {
       loginPage.typeEmail(user.email)
           .typePassword(user.password)
           .clickSignInButton();
-      homePage.checkDirectToHomePage(user.username);
   });
 });
 

@@ -7,6 +7,7 @@ export const homePage = {
     BTN_ADMIN: "#adminmenu",
     BTN_PRODUCT: 'a.dropdown-item[href="/admin/productlist"]',
     BTN_ORDER: 'a.dropdown-item[href="/admin/orderlist"]',
+    BTN_USER: 'a.dropdown-item[href="/admin/userlist"]',
     BTN_CART: 'a[href="/cart"]',
     BTN_LOGOUT: ".dropdown-menu > [role='button']",
     BTN_CLOSE_TOAST: ".Toastify__close-button",
