@@ -53,5 +53,9 @@ export const orderSummary = {
 
     navigateToProductDetails(product) {
         cy.contains('a', product).click();
+    },
+
+    verifyNoButtonToChangeStatus(){
+        cy.contains('button', 'Mark as Delivered').should('not.exist');
     }
 };

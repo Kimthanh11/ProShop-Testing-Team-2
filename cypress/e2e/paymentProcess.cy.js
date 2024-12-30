@@ -1,4 +1,3 @@
-const { loginPage } = require("../pages/login");
 const { homePage } = require("../pages/homepage");
 const { productDetails } = require("../pages/productDetails");
 const { shoppingCart } = require("../pages/shoppingCart");
@@ -11,11 +10,8 @@ beforeEach(() => {
     cy.fixture("users").as("user");
     cy.fixture("products").as("product");
     cy.fixture("addresses").as("address");
-  });
-  
-it("Order successfully with PayPal", function () {
-  cy.visit("/login");
-  cy.login("customer1")
+
+    cy.login("customer1")
 
   // Search for another product
       cy.get("@product").then((product) => {
@@ -39,7 +35,9 @@ it("Order successfully with PayPal", function () {
       // Enter payment details and place the order
       payment.pay()
       orderSummary.clickPlaceOrder()
+  });
   
+it("Order successfully with PayPal", function () {
       // Paypal
       orderSummary.clickPaypal()
       cy.wait(5000)
@@ -50,4 +48,18 @@ it("Order successfully with PayPal", function () {
       cy.wait(5000)
 
       orderSummary.checkStatusOrder(false)
+})
+
+it("Paypal is not linked to account with wrong email", function () {
+      // Paypal
+      orderSummary.clickPaypal()
+      cy.wait(5000)
+      paypalPopup.loginWrongEmail()
+})
+
+it.only("Paypal is not linked to account with wrong password", function () {
+      // Paypal
+      orderSummary.clickPaypal()
+      cy.wait(5000)
+      paypalPopup.loginWrongPassword()
 })
