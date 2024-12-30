@@ -4,6 +4,9 @@ import { payment } from "../pages/payment";
 import { productDetails } from "../pages/productDetails";
 import { shipping } from "../pages/shipping";
 import { shoppingCart } from "../pages/shoppingCart";
+import { homePage, homepage } from "../pages/homepage";
+import { orders } from "../pages/orders";
+import { paypalPopup } from "../pages/paypalPopup";
 
 before(() => {
     // Run the data:destroy command
@@ -24,11 +27,7 @@ beforeEach(() => {
 
     // Login
     cy.visit("/login");
-    cy.get("@user").then((user) => {
-        loginPage.typeEmail(user.customer1.email)
-            .typePassword(user.customer1.password)
-            .clickSignInButton();
-    });
+    cy.login("customer1");
 });
 
 it('Verify a product is added to the cart when a single in-stock product is selected', function () {
@@ -118,7 +117,7 @@ it('Verify the user can proceed to the next step when all payment details are en
     orderSummary.checkDirectToOrderSummary()
 });
 
-it.only("Verify the order is successfully placed when all required details are provided correctly.", function () {
+it("Verify the order is successfully placed when all required details are provided correctly.", function () {
     cy.get("@product").then((product) => {
         cy.searchAndSelectProduct(product.sony.name);
         productDetails.addToCart()
@@ -137,4 +136,77 @@ it.only("Verify the order is successfully placed when all required details are p
     orderSummary.checkDirectToOrderSummary()
     orderSummary.clickPlaceOrder()
     orderSummary.checkPlacedOrder()
+})
+
+it("Verify that user can save product they want to buy by adding into cart and can purchase in next login", function () {
+    cy.get("@product").then((product) => {
+        cy.searchAndSelectProduct(product.sony.name);
+        productDetails.addToCart()
+    })
+
+    homePage.logout()
+
+    cy.login('customer1')
+    homePage.checkNumberOfProductsInCart(1)
+})
+
+it("Verify that stock is eliminated when pay", function () {
+    cy.get("@product").then((product) => {
+        cy.searchAndSelectProduct(product.sony.name);
+        cy.get('.row').contains('div', 'Qty').parent().find('select.form-control').select(product.sony.countInStock.toString());
+        productDetails.addToCart()
+    });
+    shoppingCart.proceedToCheckout()
+    cy.get("@address").then((address) => {
+                shipping
+                    .inputAddress(address.address)
+                    .inputCity(address.city)
+                    .inputPostalCode(address.postalCode)
+                    .inputCountry(address.country)
+                    .proceedToCheckout();
+            });
+    payment.pay()
+    orderSummary.clickPlaceOrder()
+
+    // Paypal
+    orderSummary.clickPaypal()
+    cy.wait(5000)
+    paypalPopup.login()
+    cy.wait(5000)
+    paypalPopup.pay()
+
+    cy.wait(5000)
+
+    orderSummary.checkStatusOrder(false)
+
+    // Logout
+    cy.wait(10000)
+    homePage.logout()
+
+    // Visit login page and log in as admin
+    cy.visit("/login");
+    cy.login("admin");
+
+    // Navigate to Admin Menu and Orders page
+    homePage.navigateAdminOrders()
+
+    // Mark the order as delivered
+    orders.navigateToOneSpecificOrder()
+    orderSummary.clickDelivered()
+    orderSummary.checkStatusOrder(true)
+
+    homePage.logout()
+    cy.login('customer1')
+    cy.get("@product").then((product) => {
+        cy.searchAndSelectProduct(product.sony.name);
+    });
+    productDetails.disableAddToCart(); // Assert button is disabled
+})
+
+it.only('Verify that Number of review and rating for a product display correctly', function () {
+    cy.get("@product").then((product) => {
+        cy.searchAndSelectProduct(product.sony.name);
+        cy.wait(2000);
+        cy.contains('div[role="alert"].alert-info', 'No Reviews').should('not.exist');
+    });
 })
